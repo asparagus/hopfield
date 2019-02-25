@@ -6,14 +6,14 @@ from networks.hopfield import HopfieldNetwork
 from networks.update import SyncUpdate, AsyncUpdate
 
 
-def benchmark(algorithm, dataset, update_rule):
+def benchmark(algorithm, dataset, update_rule, mangling=1):
     if dataset is None or len(dataset) is 0:
         return {}
 
     training_steps = [5]
     num_neurons = len(dataset[0])
 
-    benchmark = Benchmark(algorithm, dataset)
+    benchmark = Benchmark(algorithm, dataset, mangling=mangling)
     for steps in training_steps:
         benchmark.eval(
             HopfieldNetwork(num_neurons, update_rule=update_rule),
@@ -27,9 +27,9 @@ def dataset(num_datapoints, num_neurons):
 
 
 if __name__ == "__main__":
-    data = dataset(15, num_neurons=10000)
+    data = dataset(100, num_neurons=10000)
     print(data)
     print("\n\n\n\n\n")
-    print(benchmark(HebbianLearning(), data, SyncUpdate()))
+    print(benchmark(HebbianLearning(), data, SyncUpdate(), mangling=100))
 
     print("Done!")
