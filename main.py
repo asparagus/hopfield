@@ -27,7 +27,7 @@ def dataset(num_datapoints, num_neurons):
 
 
 if __name__ == "__main__":
-    data = dataset(15, num_neurons=100)
+    data = dataset(15, num_neurons=10000)
     print(data)
     print("\n\n\n\n\n")
     print(benchmark(HebbianLearning(), data, SyncUpdate()))

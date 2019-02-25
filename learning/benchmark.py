@@ -37,8 +37,6 @@ class Benchmark:
             if all(data[index] == network.values):
                 retrievals += 1
 
-            print(np.array([query, network.values, data[index]]))
-
         metrics = {}
         metrics["training_time"] = training_end_time - training_start_time
         metrics["convergence"] = convergence
