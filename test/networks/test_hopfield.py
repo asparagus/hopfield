@@ -1,12 +1,13 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 import pytest
-from networks.hopfield import HopfieldNetwork
+
+from networks import hopfield
 
 
 @pytest.fixture
 def hopfield_network():
-    return HopfieldNetwork(100)
+    return hopfield.HopfieldNetwork(100)
 
 def test_initialization(hopfield_network):
     for neuron in hopfield_network._neurons:

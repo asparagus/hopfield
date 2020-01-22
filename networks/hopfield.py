@@ -2,6 +2,7 @@
 # -*- coding: utf-8 -*-
 """Implementation of a Hopfield Network."""
 import numpy as np
+
 from networks.update import SyncUpdate
 
 
@@ -45,7 +46,8 @@ class HopfieldNetwork:
 
     @property
     def values(self):
-        return self._neurons
+        """Retrieve the current values of the neurons."""
+        return self._neurons.copy()
 
     def _random_neuron_values(self, size):
         """Helper function to create random neuron values in {-1, 1}."""

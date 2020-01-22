@@ -5,8 +5,8 @@ import numpy as np
 
 
 class HebbianLearning:
-    def __init__(self, async=True):
-        self._async = async
+    def __init__(self):
+        pass
 
     def train(self, network, data, steps, convergence_threshold=1e-10):
         # Steps are ignored in this implementation

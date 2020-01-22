@@ -9,17 +9,17 @@ import time
 class Benchmark:
     """A class to run the benchmark."""
 
-    def __init__(self, algorithm, dataset, mangling=1):
-        """Initialize the benchmark with the given algorithm and data."""
+    def __init__(self, dataset, noise=0.1):
+        """Initialize the benchmark with the given data."""
         self._dataset = np.array(dataset)
-        self._algorithm = algorithm
         self._aggregate_metrics = {}
-        self._mangling = mangling
+        self._noise = noise
         self._queries = self._create_queries(
-            self._dataset, num_queries=1000
+            self._dataset, num_queries=min(1000, len(self._dataset))
         )
+        self._triplets = {}  # (original, query, result) triplets
 
-    def eval(self, network, training_steps=1e6, name=None):
+    def eval(self, algorithm, network, training_steps=1e6, name=None):
         """Benchmark this network and number of training steps."""
         if name is None:
             name = len(self._aggregate_metrics)
@@ -27,43 +27,37 @@ class Benchmark:
         data = np.array(self._dataset)
 
         training_start_time = time.time()
-        convergence = self._algorithm.train(network, data, training_steps)
+        convergence = algorithm.train(network, data, training_steps)
         training_end_time = time.time()
 
         retrievals = 0
-        for query, index in self._queries:
+        triplets = []
+        for query, index in self.queries:
             network.input(query)
             network.stabilize()
             if all(data[index] == network.values):
                 retrievals += 1
 
+            triplets.append([data[index], query, network.values])
+
         metrics = {}
-        metrics["training_time"] = training_end_time - training_start_time
-        metrics["convergence"] = convergence
-        metrics["retrieval"] = retrievals / len(self._queries)
-        metrics["queries"] = len(self._queries)
+        metrics['training_time'] = training_end_time - training_start_time
+        metrics['convergence'] = convergence
+        metrics['retrieval'] = retrievals / len(self._queries)
+        metrics['queries'] = len(self._queries)
 
         self._aggregate_metrics[name] = metrics
+        self._triplets[name] = triplets
 
     def _create_queries(self, dataset, num_queries):
-        included = set((tuple(x) for x in dataset))
-        queries = set()
-        queries_with_indices = set()
-        attempts = 0
-        limit = min(100, 5 * len(dataset))
-        while len(queries) < num_queries and attempts < limit:
-            attempts += 1
-            index = np.random.randint(len(dataset))
-            base = np.array(dataset[index])
-            possible_query = Benchmark._mangle(base, self._mangling)
-            if possible_query not in queries:
-                differences = dataset - possible_query
-                distance = np.sum(differences != 0, 1)
-                if sum(distance <= self._mangling) == 1:
-                    queries.add(possible_query)
-                    queries_with_indices.add((possible_query, index))
+        data_indices = np.random.choice(len(dataset), num_queries, replace=False)
+        mangled_data = list(self._apply_noise(dataset[i], self._noise)
+                            for i in data_indices)
+        return list(zip(mangled_data, data_indices))
 
-        return list(queries_with_indices)
+    @property
+    def queries(self):
+        return self._queries
 
     @property
     def results(self):
@@ -75,7 +69,10 @@ class Benchmark:
         return "%s: %s" % (self.__class__, json.dumps(self.results, indent=4))
 
     @staticmethod
-    def _mangle(datapoint, mangling):
-        indices_for_mangling = np.random.choice(len(datapoint), replace=False)
-        datapoint[indices_for_mangling] *= -1
-        return tuple(datapoint)
+    def _apply_noise(datapoint, noise):
+        num_noisy = int(np.ceil(len(datapoint) * noise))
+        noisy_indices = np.random.choice(len(datapoint), num_noisy, replace=False)
+
+        noisy_datapoint = np.array(datapoint).copy()
+        noisy_datapoint[noisy_indices] = np.random.choice([1, -1], num_noisy, replace=True)
+        return noisy_datapoint

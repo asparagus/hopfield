@@ -1,8 +1,8 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 """Implementation of a Hopfield Network."""
+import abc
 import numpy as np
-from abc import ABC, abstractmethod
 
 
 class RandomIndexGenerator:
@@ -22,9 +22,10 @@ class SequentialIndexGenerator:
         return self._index % len(arr)
 
 
-class UpdateRule(ABC):
+class UpdateRule(abc.ABC):
     """A base UpdateRule class."""
 
+    @abc.abstractmethod
     def __call__(self, neurons, connections, threshold):
         """
         Computes the new values.

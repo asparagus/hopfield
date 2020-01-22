@@ -2,8 +2,8 @@
 # -*- coding: utf-8 -*-
 import pytest
 import numpy as np
-from networks.hopfield import HopfieldNetwork
-from networks.update import AsyncUpdate, SyncUpdate
+
+from networks import update
 
 
 @pytest.fixture
@@ -34,7 +34,7 @@ def index(request):
 def test_sync_update(
         neurons, connections, threshold, expected_neurons):
     expected_change = sum(neurons != expected_neurons)
-    sync_rule = SyncUpdate()
+    sync_rule = update.SyncUpdate()
     new_neurons, change = sync_rule(neurons, connections, threshold)
 
     assert change == expected_change
@@ -44,7 +44,7 @@ def test_async_update(
         neurons, connections, threshold, expected_neurons, index):
     # Will only update neurons[index]
     expected_change = int(neurons[index] != expected_neurons[index])
-    async_rule = AsyncUpdate(lambda x: index)
+    async_rule = update.AsyncUpdate(lambda x: index)
 
     new_neurons, change = async_rule(neurons, connections, threshold)
 
@@ -55,7 +55,7 @@ def test_async_update(
 
 def test_double_async_update_does_nothing(
         neurons, connections, threshold, index):
-    async_rule = AsyncUpdate(lambda x: index)
+    async_rule = update.AsyncUpdate(lambda x: index)
 
     # Does some update
     async_rule(neurons, connections, threshold)
