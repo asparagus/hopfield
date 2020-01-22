@@ -49,11 +49,13 @@ class HopfieldNetwork:
         """Retrieve the current values of the neurons."""
         return self._neurons.copy()
 
-    def _random_neuron_values(self, size):
+    @classmethod
+    def _random_neuron_values(cls, size):
         """Helper function to create random neuron values in {-1, 1}."""
-        return  np.sign(np.random.rand(size) - 0.5)
+        return np.sign(np.random.rand(size) - 0.5)
 
-    def _random_connections(self, size):
+    @classmethod
+    def _random_connections(cls, size):
         """
         Helper function to create connection values in (-1, 1).
 
@@ -64,7 +66,7 @@ class HopfieldNetwork:
         np.fill_diagonal(values, 0)
         return values
 
-    def _sign(self, value):
+    def _sign(cls, value):
         """The sign to be used when displaying this network."""
         return "+" if value == 1 else "-"
 

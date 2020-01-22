@@ -20,3 +20,8 @@ The arguments are all optional:
 
 An example output is shown on the image above, with three images displayed side-by-side.
 The left image shows John Hopfield, the middle one has added noise, and the right is the retrieved image.
+
+If required, the tests can be run from the command line.
+```bash
+python -m pytest
+```
