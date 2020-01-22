@@ -12,10 +12,11 @@ main.py [-h] [--directory DIRECTORY] [--noise NOISE] [--output OUTPUT]
 ```
 
 The arguments are all optional:
-  --directory -- Directory to obtain the sample images from -- default: samples
-  --noise -- Fraction of bits randomized for evaluation -- default: 0.1
-  --output -- Output directory -- default: output
+- --directory -- Directory to obtain the sample images from -- default: samples
+- --noise -- Fraction of bits randomized for evaluation -- default: 0.1
+- --output -- Output directory -- default: output
 
 ![Example output](sample_output.jpg)
+
 An example output is shown on the image above, with three images displayed side-by-side.
 The left image shows John Hopfield, the middle one has added noise, and the right is the retrieved image.
