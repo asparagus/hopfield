@@ -3,7 +3,7 @@ Repository for experiments with Hopfield and related networks.
 
 > A Hopfield network is a form of recurrent artificial neural network popularized by John Hopfield in 1982, but described earlier by Little in 1974 -- [Wikipedia](https://en.wikipedia.org/wiki/Hopfield_network)
 
-Ι'm studying these networks for their simplicity and potential to represent a memory in another [project](https://github.com/Ariel-Perez/brain).
+Ι'm studying these networks for their simplicity and potential to represent a memory in another [project](https://github.com/asparagus/brain).
 
 The script takes images from a given directory and trains a network to remember them. Then it adds noise to the images and attempts to retrieve them using the Hopfield network. It can be run from the command line.
 
